@@ -16,6 +16,14 @@
     max-width: 400px;
     margin: auto;
 }
+.loader {
+    font-size: 200 px;
+    position: relative;
+    margin: 20% auto;
+    width: 250px;
+    display: flex;
+    justify-content: space-between;
+}
 
 .cat-info {
     margin-top: 20px;

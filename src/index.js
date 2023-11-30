@@ -13,47 +13,59 @@ const ref = {
 };
 const { selector, divCatInfo, loader, error } = ref;
 
-loader.classList.replace('loader', 'is-hidden');
-error.classList.add('is-hidden');
-divCatInfo.classList.add('is-hidden');
+loader.style.display = 'block';
+divCatInfo.style.display = 'none';
+error.style.display = 'none';
+selector.style.display = 'none'
+let arrBreedsId = [{ text: 'Select a breed', value: '' }];
 
-let arrBreedsId = [];
+
 fetchBreeds()
+
     .then(data => {
+
         data.forEach(element => {
             arrBreedsId.push({ text: element.name, value: element.id });
         });
+
+        selector.style.display = 'flex'
         new SlimSelect({
             select: selector,
             data: arrBreedsId
         });
+
     })
     .catch(onFetchError);
 
 selector.addEventListener('change', onSelectBreed);
 
 function onSelectBreed(event) {
-    loader.classList.replace('is-hidden', 'loader');
-    selector.classList.add('is-hidden');
-    divCatInfo.classList.add('is-hidden');
-
+    loader.style.display = 'block';
+    divCatInfo.style.display = 'none';
+    error.style.display = 'none';
     const breedId = event.currentTarget.value;
     fetchIdBreed(breedId)
         .then(data => {
-            loader.classList.replace('loader', 'is-hidden');
-            selector.classList.remove('is-hidden');
-            const { url, breeds } = data[0];
+            loader.style.display = 'none';
 
-            divCatInfo.innerHTML = `<div class="box-img"><img src="${url}" alt="${breeds[0].name}" width="400"/></div><div class="box"><h1>${breeds[0].name}</h1><p>${breeds[0].description}</p><p><b>Temperament:</b> ${breeds[0].temperament}</p></div>`
-            divCatInfo.classList.remove('is-hidden');
+            if (breedId === '') {
+                divCatInfo.style.display = 'none';
+                loader.style.display = 'none';
+            }
+            else {
+                const { url, breeds } = data[0];
+
+                divCatInfo.innerHTML = `<div class="box-img"><img src="${url}" alt="${breeds[0].name}" width="400"/></div><div class="box"><h1>${breeds[0].name}</h1><p>${breeds[0].description}</p><p><b>Temperament:</b> ${breeds[0].temperament}</p></div>`
+                divCatInfo.style.display = 'flex';
+            }
         })
+
         .catch(onFetchError);
 };
 
 function onFetchError(error) {
-    selector.classList.remove('is-hidden');
-    loader.classList.replace('loader', 'is-hidden');
-
+    selector.style.display = 'none'
+    loader.style.display = 'none';
     Notify.failure('Oops! Something went wrong! Try reloading the page or select another cat breed!', {
         position: 'center-center',
         timeout: 2000,
@@ -61,4 +73,3 @@ function onFetchError(error) {
         fontSize: '24px'
     });
 };
-
